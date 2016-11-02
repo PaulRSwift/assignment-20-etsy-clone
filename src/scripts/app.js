@@ -1,34 +1,16 @@
 const Backbone = require('backbone')
 const $ = require('jquery')
 const EtsyCollection = require('./models-collections.js')
-const homePageBuilder = require('./home-view.js')
+const ProfileMultiView = require('./home-view.js')
 var ViewTemplate = require('./view-constructor.js')
-const productPageBuilder = require('./prodcut-view.js')
+const ProductView = require('./product-view.js')
 
 
 
 // console.log(Backbone)
 document.querySelector('#app-container').innerHTML = `<h1>YOLO</h1>`
 
-var ProfileMultiView = Backbone.View.extend({
-  el: '#container',
 
-  coll: null,
-
-  events: {
-    "click #listing" : "handleProfileSelect"
-  },
-
-  handleProfileSelect: function(e){
-    window.location.hash = "#listing/"+e.currentTarget.id
-  },
-
-  initialize: function(collectionPls){
-    this.coll = collectionPls
-    console.log(this.coll)
-    this.coll.on("sync", this.render.bind(this) )
-  },
- })
 
 const AppRouter = Backbone.Router.extend({
    routes: {
@@ -40,7 +22,8 @@ const AppRouter = Backbone.Router.extend({
 
    showDetailsPage: function (itemArg){
       var singItemColl = new EtsyCollection(itemArg)
-      var singleItemview = new ViewTemplate ('#app-container', productPageBuilder )
+      var singleItemview = new ProductView()
+      singleItemview.render()
       //  var itemId = window.location.hash
       //  console.log(itemId);
 
@@ -55,7 +38,8 @@ const AppRouter = Backbone.Router.extend({
 
    showHomePage: function (){
       var etsyColl = new EtsyCollection()
-      var mutithumbview = new ViewTemplate ('#app-container', homePageBuilder)
+      var mutithumbview = new ProfileMultiView()
+      // var mutithumbview = new ViewTemplate('#app-container', ProfileMultiView)
 
       etsyColl.fetch().then(function(){
          var itemDisplay = etsyColl.models[0].get('title')
